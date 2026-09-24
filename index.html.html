@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#081b2f">
+<title>競賽公正抽籤系統 Pro</title>
+<style>
+:root{
+ --nav:#081b2f;--nav2:#103b61;--blue:#1475c9;--blue2:#0b4e88;
+ --red:#c93636;--red2:#8e2020;--gold:#e6aa25;--green:#1f8b55;
+ --bg:#eef3f8;--card:#fff;--ink:#18232e;--muted:#6a7885;--line:#d9e2ea;
+ --shadow:0 12px 36px rgba(10,35,58,.12);--radius:18px;
+}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}
+.top{background:linear-gradient(120deg,var(--nav),#145b8f 65%,#d39a17);color:#fff;padding:18px 16px;position:sticky;top:0;z-index:30;box-shadow:0 3px 18px #00152555}
+.topin{max-width:1500px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-size:clamp(21px,3vw,32px);font-weight:950;letter-spacing:1px}.sub{font-size:12px;opacity:.8;margin-top:3px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:850}.btn-white{background:#ffffff18;color:#fff;border:1px solid #ffffff44}.btn-gold{background:var(--gold);color:#201800}.btn-blue{background:var(--blue);color:#fff}.btn-red{background:var(--red);color:#fff}.btn-dark{background:#20384d;color:#fff}.btn-lite{background:#edf3f7;color:#243b4d}
+.app{max-width:1500px;margin:auto;padding:18px}
+.card{background:var(--card);border:1px solid #ffffffaa;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+h2{margin:0 0 13px;font-size:20px}h3{margin:0 0 9px}.muted{color:var(--muted);font-size:13px}
+.setup{display:grid;grid-template-columns:1.2fr .6fr .8fr .8fr;gap:12px}
+.field label{font-size:13px;font-weight:900;display:block}.field input,.field select{width:100%;margin-top:6px;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;outline:none}
+.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1475c922}
+.names{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.names input{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.notice{margin-top:12px;background:#fff8df;border-left:4px solid var(--gold);padding:11px 13px;border-radius:8px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.stat{padding:12px;border-radius:13px;background:#f5f8fa;border:1px solid var(--line)}.stat b{display:block;font-size:20px}.stat span{font-size:12px;color:var(--muted)}
+.hero{background:linear-gradient(120deg,#0a2842,#176b9d);color:#fff;border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:14px}.hero .big{font-size:clamp(22px,4vw,38px);font-weight:950}.hero .small{opacity:.82;font-size:12px}
+.draw-stage{min-height:160px;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at 50% 35%,#2c83ba,#09223a);border-radius:16px;color:#fff;overflow:hidden;position:relative}.draw-stage:before,.draw-stage:after{content:"";position:absolute;width:240px;height:240px;border:2px solid #ffffff18;border-radius:50%;animation:spin 8s linear infinite}.draw-stage:after{width:360px;height:360px;animation-direction:reverse}@keyframes spin{to{transform:rotate(360deg)}}.draw-content{position:relative;z-index:2}.draw-label{font-size:12px;opacity:.75}.draw-name{font-size:clamp(30px,7vw,68px);font-weight:1000;letter-spacing:3px;text-shadow:0 3px 15px #0008}
+.seed-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.seed{background:#f6f8fa;border:1px solid var(--line);padding:10px;border-radius:10px;text-align:center}.seed .n{font-size:11px;color:var(--muted)}.seed strong{font-size:16px}
+.bracket-scroll{overflow:auto;padding-bottom:6px}.bracket{display:flex;gap:18px;min-width:max-content;align-items:stretch}.round{width:250px;display:flex;flex-direction:column}.round-title{padding:10px;border-radius:11px;background:var(--blue2);color:#fff;font-weight:950;text-align:center;margin-bottom:10px}.round-title.red{background:var(--red2)}.round-title.gold{background:#956c08}.match-list{display:flex;flex-direction:column;justify-content:space-around;gap:12px;flex:1}.match{background:#fff;border:2px solid var(--line);border-radius:13px;padding:8px;min-height:96px;box-shadow:0 4px 14px #17324d12}.match.open{border-color:var(--gold);box-shadow:0 0 0 3px #e6aa2530}.match.done{border-color:#71aa86}.mhead{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);font-weight:900}.slot{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:7px 8px;background:#f3f6f8;border-radius:8px;margin-top:4px;font-weight:750;min-height:32px}.slot.click{cursor:pointer}.slot.click:hover{background:#e5f1fb}.slot.win{background:#dcf3e5;color:#145b35}.slot.loss{opacity:.48;text-decoration:line-through}.slot.bye{background:#fff8df;color:#765600}.hintline{font-size:10px;color:var(--muted);margin-top:5px}.champ{background:linear-gradient(135deg,#fff4c9,#ffe28a);border-color:#e2ad2c;text-align:center}.elim{background:#f9eeee;color:#8d2929}
+.log{background:#0b1721;color:#d9e8f3;border-radius:12px;padding:12px;min-height:100px;max-height:260px;overflow:auto;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap}
+.modal{position:fixed;inset:0;background:#061522aa;display:none;align-items:center;justify-content:center;padding:16px;z-index:100}.modal.show{display:flex}.modalbox{background:#fff;border-radius:18px;max-width:520px;width:100%;padding:20px;box-shadow:0 30px 80px #0008}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px}
+.fullscreen #setupCard,.fullscreen #logCard,.fullscreen #seedCard{display:none}.fullscreen .app{max-width:1700px}.fullscreen .top{position:relative}
+.print-only{display:none}
+@media(max-width:1000px){.setup{grid-template-columns:1fr 1fr}.names{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(3,1fr)}.seed-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:650px){.topin{align-items:flex-start}.top-actions{max-width:48%}.setup{grid-template-columns:1fr}.names{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:1fr 1fr}.seed-grid{grid-template-columns:repeat(2,1fr)}.app{padding:10px}.card{padding:13px}.round{width:225px}.hero{align-items:flex-start;flex-direction:column}}
+@media print{
+ @page{size:A4 landscape;margin:8mm}.top-actions,.setup-card,.draw-card,.log-card,.seed-card,.no-print{display:none!important}.top{position:static;background:#fff;color:#111;box-shadow:none;border-bottom:2px solid #111}.app{max-width:none;padding:0}.card{box-shadow:none;border:1px solid #ccc}.bracket-scroll{overflow:visible}.bracket{transform:scale(.78);transform-origin:top left}.print-only{display:block}
+}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="topin">
+  <div><div class="brand">🏆 競賽公正抽籤系統 Pro</div><div class="sub">單淘汰・雙敗淘汰｜手機・平板・電腦｜離線也能使用</div></div>
+  <div class="top-actions no-print">
+   <button class="btn btn-white" id="fullscreenBtn">⛶ 全螢幕</button>
+   <button class="btn btn-white" id="saveBtn">💾 儲存</button>
+   <button class="btn btn-white" id="loadBtn">↥ 載入</button>
+   <button class="btn btn-gold" id="printBtn">🖨 列印</button>
+  </div>
+ </div>
+</header>
+
+<main class="app">
+<section class="card setup-card" id="setupCard">
+ <h2>⚙️ 建立比賽</h2>
+ <div class="setup">
+  <div class="field"><label>比賽名稱<input id="event" value="中秋節東立陀螺友誼賽"></label></div>
+  <div class="field"><label>參賽人數<input id="count" type="number" min="2" max="32" value="10"></label></div>
+  <div class="field"><label>賽制<select id="format"><option value="single">單淘汰</option><option value="double">雙敗淘汰（輸兩場淘汰）</option></select></label></div>
+  <div class="field"><label>抽籤<select id="draw"><option value="crypto">公平隨機抽籤</option><option value="order">依輸入順序</option></select></label></div>
+ </div>
+ <div class="muted" style="margin-top:12px">輸入姓名後按「開始抽籤」。隨機抽籤使用瀏覽器加密亂數產生種子，再以該種子完成可驗證的排列；抽籤後鎖定名單。</div>
+ <div id="names" class="names"></div>
+ <div class="actions">
+  <button class="btn btn-blue" id="startBtn">🎲 開始抽籤</button>
+  <button class="btn btn-lite" id="clearBtn">↺ 清除／重新開始</button>
+  <button class="btn btn-dark" id="nextBtn">▶ 下一場</button>
+ </div>
+ <div class="notice">現場使用建議：投影「全螢幕」；裁判只需點選實際勝者。系統會自動把勝者送往下一輪、敗者送往敗部（雙敗制）。</div>
+</section>
+
+<section class="card">
+ <div class="stats">
+  <div class="stat"><span>比賽</span><b id="sEvent">—</b></div>
+  <div class="stat"><span>賽制</span><b id="sFormat">—</b></div>
+  <div class="stat"><span>選手</span><b id="sCount">—</b></div>
+  <div class="stat"><span>已完成</span><b id="sDone">0</b></div>
+  <div class="stat"><span>狀態</span><b id="sStatus">待開始</b></div>
+ </div>
+</section>
+
+<section class="card draw-card">
+ <div class="hero"><div><div class="small">CURRENT MATCH / 目前場次</div><div class="big" id="currentMatch">等待開始</div></div><div id="currentNote">建立比賽後開始抽籤</div></div>
+ <div class="draw-stage" style="margin-top:12px"><div class="draw-content"><div class="draw-label" id="drawLabel">抽籤結果</div><div class="draw-name" id="drawName">準備就緒</div></div></div>
+</section>
+
+<section class="card">
+ <h2>🏟️ 比賽籤表</h2>
+ <div class="bracket-scroll"><div id="bracket" class="bracket"><div class="muted">開始抽籤後產生籤表。</div></div></div>
+</section>
+
+<section class="card seed-card" id="seedCard">
+ <h2>🎟️ 正式抽籤結果</h2>
+ <div id="seedGrid" class="seed-grid"></div>
+ <div class="notice" id="lockNote">尚未抽籤</div>
+</section>
+
+<section class="card log-card" id="logCard">
+ <h2>📋 公開比賽紀錄</h2>
+ <div id="log" class="log">尚無紀錄</div>
+</section>
+</main>
+
+<div class="modal" id="modal">
+ <div class="modalbox">
+  <h2 id="modalTitle">確認比賽結果</h2>
+  <div id="modalBody"></div>
+  <div class="modal-actions"><button class="btn btn-lite" id="cancelModal">取消</button><button class="btn btn-blue" id="confirmModal">確認</button></div>
+ </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let S=null, pending=null;
+
+function makeNames(){
+ const n=Math.max(2,Math.min(32,+$('count').value||10));
+ const old=[...document.querySelectorAll('#names input')].map(x=>x.value);
+ $('names').innerHTML='';
+ for(let i=0;i<n;i++){let x=document.createElement('input');x.placeholder=`選手 ${i+1}`;x.value=old[i]||'';x.dataset.i=i;$('names').appendChild(x)}
+}
+$('count').onchange=makeNames; makeNames();
+
+function secureSeed(){const a=new Uint32Array(2);crypto.getRandomValues(a);return (BigInt(a[0])<<32n)|BigInt(a[1])}
+function mulberry32(seed){let a=Number(seed&0xffffffffn)>>>0;return function(){a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=(t+Math.imul(t^t>>>7,t|61))>>>0;return ((t^t>>>14)>>>0)/4294967296}}
+function shuffleSeed(arr,seed){let r=mulberry32(seed);let a=arr.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function pow2(n){let x=1;while(x<n)x*=2;return x}
+function now(){return new Date().toLocaleString('zh-TW',{hour12:false})}
+function log(x){$('log').textContent=`[${now()}] ${x}\n`+$('log').textContent}
+function status(){if(!S){$('sEvent').textContent='—';$('sFormat').textContent='—';$('sCount').textContent='—';$('sStatus').textContent='待開始';return}
+ $('sEvent').textContent=S.event;$('sFormat').textContent=S.format==='single'?'單淘汰':'雙敗淘汰';$('sCount').textContent=S.players.length+' 人';
+ const done=S.matches.filter(m=>m.done).length; $('sDone').textContent=done;
+ $('sStatus').textContent=S.champion?'🏆 完賽':'進行中';
+}
+function allMatches(){return S?.matches||[]}
+function createMatch(id,round,a=null,b=null,type='W',meta={}){return {id,round,a,b,type,done:false,winner:null,loser:null,...meta}}
+function getById(id){return S.matches.find(m=>m.id===id)}
+function addMatch(m){S.matches.push(m);return m}
+
+function start(){
+ const n=+$('count').value;
+ const names=[...document.querySelectorAll('#names input')].map(x=>x.value.trim());
+ if(names.length!==n || names.some(x=>!x)){alert(`請完整輸入 ${n} 位選手姓名。`);return}
+ const seed=secureSeed();
+ const players=$('draw').value==='crypto'?shuffleSeed(names,seed):names;
+ S={version:2,event:$('event').value.trim()||'競賽',format:$('format').value,players,seed:seed.toString(),created:now(),locked:true,matches:[],champion:null,losers:[],current:null};
+ $('lockNote').textContent=`🔒 名單已鎖定｜抽籤時間 ${S.created}｜亂數種子 ${S.seed}`;
+ $('seedGrid').innerHTML=players.map((p,i)=>`<div class="seed"><div class="n">籤位 ${i+1}</div><strong>${p}</strong></div>`).join('');
+ $('drawName').textContent=players[0];$('drawLabel').textContent='第 1 籤抽出';
+ log(`抽籤完成：${players.map((p,i)=>`${i+1}.${p}`).join(' / ')}`);
+ if(S.format==='single')buildSingle(); else buildDouble();
+ render(); saveLocal();
+}
+function buildSingle(){
+ const n=S.players.length, size=pow2(n), slots=S.players.slice();while(slots.length<size)slots.push(null);
+ let prev=[];
+ for(let i=0;i<size;i+=2)prev.push(addMatch(createMatch(`W${1}-${i/2+1}`,1,slots[i],slots[i+1],'W',{bye:false})));
+ prev.forEach(m=>{if(m.a&&!m.b){m.done=true;m.winner=m.a;m.b='BYE';m.bye=true}else if(m.b&&!m.a){m.done=true;m.winner=m.b;m.a='BYE';m.bye=true}});
+ let r=2;
+ while(prev.length>1){let cur=[];for(let i=0;i<prev.length;i+=2){cur.push(addMatch(createMatch(`W${r}-${i/2+1}`,r,null,null,'W',{sources:[prev[i].id,prev[i+1].id]})))}prev=cur;r++}
+ S.bracketRounds=r-1;propagateSingle();
+}
+function propagateSingle(){
+ for(let r=2;r<=S.bracketRounds;r++){
+  const cur=S.matches.filter(m=>m.type==='W'&&m.round===r);
+  cur.forEach(m=>{
+   const [a,b]=m.sources.map(getById);
+   if(a?.done)m.a=a.winner;
+   if(b?.done)m.b=b.winner;
+   if(m.a && m.b==='BYE' && !m.done){m.done=true;m.winner=m.a}
+   if(m.b && m.a==='BYE' && !m.done){m.done=true;m.winner=m.b}
+  });
+ }
+ const fin=S.matches.find(m=>m.type==='W'&&m.round===S.bracketRounds);
+ if(fin?.done)S.champion=fin.winner;
+}
+function buildDouble(){
+ /*
+  Tournament state is organized as a two-loss queue with a visible Winners/Losers bracket.
+  Winners bracket is a power-of-two tree with byes. Losers are paired into scheduled LB
+  matches after each WB round. A player is eliminated only on loss #2.
+ */
+ const n=S.players.length,size=pow2(n),slots=S.players.slice();while(slots.length<size)slots.push(null);
+ let prev=[];
+ for(let i=0;i<size;i+=2)prev.push(addMatch(createMatch(`W1-${i/2+1}`,1,slots[i],slots[i+1],'W')));
+ prev.forEach(m=>{if(m.a&&!m.b){m.b='BYE';m.done=true;m.winner=m.a;m.bye=true}else if(m.b&&!m.a){m.a='BYE';m.done=true;m.winner=m.b;m.bye=true}});
+ let r=2;
+ while(prev.length>1){let cur=[];for(let i=0;i<prev.length;i+=2)cur.push(addMatch(createMatch(`W${r}-${i/2+1}`,r,null,null,'W',{sources:[prev[i].id,prev[i+1].id]})));prev=cur;r++}
+ S.bracketRounds=r-1;S.losses={};S.players.forEach(p=>S.losses[p]=0);
+ // Losers from WB R1 are paired in LB R1, then subsequent rounds are generated dynamically.
+ propagateDoubleWinners();
+ createInitialLB();
+}
+function propagateDoubleWinners(){
+ for(let r=2;r<=S.bracketRounds;r++){
+  S.matches.filter(m=>m.type==='W'&&m.round===r).forEach(m=>{
+   const [a,b]=m.sources.map(getById);
+   if(a?.done)m.a=a.winner;
+   if(b?.done)m.b=b.winner;
+  });
+ }
+}
+function createInitialLB(){
+ const w1=S.matches.filter(m=>m.type==='W'&&m.round===1);
+ const losers=w1.flatMap(m=>m.done&&m.winner?[m.a==='BYE'?m.b:m.b==='BYE'?m.a:(m.a===m.winner?m.b:m.a)]:[]);
+ let idx=0;
+ for(let i=0;i<losers.length;i+=2) if(losers[i+1]) addMatch(createMatch(`L1-${idx++/1+1}`,1,losers[i],losers[i+1],'L',{lossesNeeded:2}));
+ generateLBPlaceholders();
+}
+function generateLBPlaceholders(){
+ // Create enough placeholder LB rounds for normalized size.
+ // For each later LB round, matches are fed from prior LB winners and WB losers.
+ const k=S.bracketRounds;
+ for(let lr=2;lr<=2*k-2;lr++){
+  const count=Math.max(1,Math.floor(pow2(k)/pow2(Math.ceil((lr+1)/2))));
+  for(let i=0;i<count;i++){
+   if(!S.matches.some(m=>m.type==='L'&&m.round===lr&&m.id===`L${lr}-${i+1}`))
+    addMatch(createMatch(`L${lr}-${i+1}`,lr,null,null,'L',{sources:[]}));
+  }
+ }
+ // placeholders will be populated when prior/WB results become known
+}
+function loserOf(m){
+ return m.a===m.winner?m.b:m.a;
+}
+function recordLoss(p){
+ if(!p||p==='BYE')return;
+ S.losses[p]=(S.losses[p]||0)+1;
+ if(S.losses[p]>=2)log(`❌ ${p} 第二敗，淘汰`);
+ else {S.losers.push(p);log(`↩ ${p} 進入敗部（目前 ${S.losses[p]} 敗）`)}
+}
+function completeMatch(m,winner){
+ if(m.done)return;
+ if(!m.a||!m.b||m.a==='BYE'||m.b==='BYE')return;
+ const loser=m.a===winner?m.b:m.a;
+ m.done=true;m.winner=winner;m.loser=loser;
+ if(m.type==='W') recordLoss(loser); else recordLoss(loser);
+ log(`${m.id}：${m.a} vs ${m.b} → ${winner} 勝`);
+ if(S.format==='single'){propagateSingle()}
+ else {updateDoubleFlow(m)}
+ render();saveLocal();
+}
+function updateDoubleFlow(m){
+ if(m.type==='W'){
+  // Make next WB sources available.
+  propagateDoubleWinners();
+  const next=S.matches.filter(x=>x.type==='W'&&x.round===m.round+1);
+  // New LB matches are populated below from losses and completed WB rounds.
+ } else {
+  // winner stays in LB; loser gets second loss and is removed from future pairings automatically
+ }
+ populateLoserBracket();
+ checkDoubleFinal();
+}
+function populateLoserBracket(){
+ // Pair available unassigned players with exactly one loss. For fairness, use arrival order:
+ // losers from WB rounds are paired with existing LB winners in alternating rounds.
+ const available=[];
+ for(const p of Object.keys(S.losses)) if(S.losses[p]===1 && !isInOpenMatch(p)) available.push(p);
+ // Find empty L matches, fill in pairs.
+ const empties=S.matches.filter(m=>m.type==='L'&&!m.done&&(!m.a||!m.b));
+ for(const m of empties){
+   if(!m.a && available.length)m.a=available.shift();
+   if(!m.b && available.length && available[0]!==m.a)m.b=available.shift();
+ }
+}
+function isInOpenMatch(p){return S.matches.some(m=>!m.done&&m.type==='L'&&(m.a===p||m.b===p))}
+function checkDoubleFinal(){
+ propagateDoubleWinners();
+ const wf=S.matches.filter(m=>m.type==='W'&&m.round===S.bracketRounds)[0];
+ if(wf?.done){
+   const wb=wf.winner;
+   const lbCandidates=Object.keys(S.losses).filter(p=>S.losses[p]===1 && p!==wb && !isInOpenMatch(p));
+   const existing=S.matches.find(m=>m.type==='F1');
+   if(!existing && lbCandidates.length===1){
+     addMatch(createMatch('F1',1,wb,lbCandidates[0],'F',{note:'敗部冠軍挑戰勝部冠軍'}));
+   }
+ }
+ const f=S.matches.find(m=>m.type==='F1');
+ if(f?.done){
+   if(f.winner===f.a){
+    S.champion=f.winner;log(`🏆 總冠軍：${S.champion}`);
+   } else {
+    const reset=S.matches.find(m=>m.type==='F2');
+    if(!reset)addMatch(createMatch('F2',2,f.a,f.b,'F',{note:'Reset／重置賽：勝部冠軍首次落敗'}));
+   }
+ }
+ const f2=S.matches.find(m=>m.type==='F2');
+ if(f2?.done){S.champion=f2.winner;log(`🏆 重置賽勝者成為總冠軍：${S.champion}`)}
+}
+function nextOpen(){
+ return S?.matches.find(m=>!m.done&&m.type!=='F'&&m.a&&m.b&&m.a!=='BYE'&&m.b!=='BYE') || S?.matches.find(m=>!m.done&&m.type==='F'&&m.a&&m.b);
+}
+function askWinner(m,p){
+ pending={m,p};$('modalTitle').textContent='確認比賽結果';$('modalBody').innerHTML=`<p><b>${m.id}</b></p><p>${m.a}　VS　${m.b}</p><p>確認 <strong>${p}</strong> 獲勝嗎？</p>`;$('modal').classList.add('show');
+}
+$('confirmModal').onclick=()=>{if(pending){completeMatch(pending.m,pending.p);pending=null}$('modal').classList.remove('show')};
+$('cancelModal').onclick=()=>{$('modal').classList.remove('show');pending=null};
+
+function matchCard(m){
+ const d=document.createElement('div');d.className='match'+(!m.done&&m.a&&m.b?' open':'')+(m.done?' done':'');
+ let a=m.a||'待定',b=m.b||'待定';
+ if(m.bye){a=m.winner;b='BYE'}
+ d.innerHTML=`<div class="mhead"><span>${m.id}</span><span>${m.done?'✓ 完成':''}</span></div>
+ <div class="slot ${m.done&&m.winner===a?'win':''} ${m.done&&m.loser===a?'loss':''} ${a==='BYE'?'bye':''}">${a}</div>
+ <div class="slot ${m.done&&m.winner===b?'win':''} ${m.done&&m.loser===b?'loss':''} ${b==='BYE'?'bye':''}">${b}</div>
+ <div class="hintline">${m.note||(!m.done&&a&&b?'點選實際勝者':'')}</div>`;
+ if(!m.done&&a&&b&&a!=='BYE'&&b!=='BYE'){d.querySelectorAll('.slot').forEach(s=>s.classList.add('click'));d.querySelectorAll('.slot')[0].onclick=()=>askWinner(m,a);d.querySelectorAll('.slot')[1].onclick=()=>askWinner(m,b)}
+ return d;
+}
+function render(){
+ status();
+ $('event').value=S?.event||$('event').value;
+ if(!S){$('currentMatch').textContent='等待開始';$('currentNote').textContent='建立比賽後開始抽籤';return}
+ const open=nextOpen();S.current=open?.id||null;
+ $('currentMatch').textContent=open?`${open.id}｜${open.a} VS ${open.b}`:(S.champion?`🏆 ${S.champion}`:'等待下一輪');
+ $('currentNote').textContent=S.champion?'比賽已完成':open?'點選勝者，系統自動更新籤表':'等待其他場次完成';
+ $('drawName').textContent=open?`${open.a}  VS  ${open.b}`:(S.champion?`🏆 ${S.champion}`:'等待結果');
+ $('drawLabel').textContent=open?`目前場次 ${open.id}`:'目前狀態';
+ renderBracket();status();
+}
+function renderBracket(){
+ const root=$('bracket');root.innerHTML='';
+ if(!S)return;
+ if(S.format==='single')renderSingleBracket(root);else renderDoubleBracket(root);
+}
+function renderSingleBracket(root){
+ const titles=['第一輪','八強','四強','決賽'];
+ for(let r=1;r<=S.bracketRounds;r++){
+  const rd=document.createElement('div');rd.className='round';
+  rd.innerHTML=`<div class="round-title">${titles[r-1]||`第 ${r} 輪`}</div>`;
+  const ml=document.createElement('div');ml.className='match-list';
+  S.matches.filter(m=>m.type==='W'&&m.round===r).forEach(m=>ml.appendChild(matchCard(m)));rd.appendChild(ml);root.appendChild(rd);
+ }
+}
+function renderDoubleBracket(root){
+ const max=S.bracketRounds;
+ for(let r=1;r<=max;r++){
+  const rd=document.createElement('div');rd.className='round';
+  rd.innerHTML=`<div class="round-title">勝部 ${r===max?'決賽':r===max-1?'準決賽':r===1?'第一輪':'第 '+r+' 輪'}</div>`;
+  const ml=document.createElement('div');ml.className='match-list';
+  S.matches.filter(m=>m.type==='W'&&m.round===r).forEach(m=>ml.appendChild(matchCard(m)));rd.appendChild(ml);root.appendChild(rd);
+ }
+ const lRounds=[...new Set(S.matches.filter(m=>m.type==='L').map(m=>m.round))].sort((a,b)=>a-b);
+ lRounds.forEach(r=>{
+  const rd=document.createElement('div');rd.className='round';
+  rd.innerHTML=`<div class="round-title red">敗部 ${r===lRounds.at(-1)?'決賽':'第 '+r+' 輪'}</div>`;
+  const ml=document.createElement('div');ml.className='match-list';
+  S.matches.filter(m=>m.type==='L'&&m.round===r).forEach(m=>ml.appendChild(matchCard(m)));rd.appendChild(ml);root.appendChild(rd);
+ });
+ const finals=S.matches.filter(m=>m.type==='F');
+ if(finals.length){const rd=document.createElement('div');rd.className='round';rd.innerHTML='<div class="round-title gold">總決賽</div>';const ml=document.createElement('div');ml.className='match-list';finals.forEach(m=>ml.appendChild(matchCard(m)));rd.appendChild(ml);root.appendChild(rd)}
+ if(S.champion){const rd=document.createElement('div');rd.className='round';rd.innerHTML='<div class="round-title gold">🏆 冠軍</div>';const ml=document.createElement('div');ml.className='match-list';const d=document.createElement('div');d.className='match champ';d.innerHTML=`<div style="font-size:30px">🏆</div><h3>${S.champion}</h3><div>總冠軍</div>`;ml.appendChild(d);rd.appendChild(ml);root.appendChild(rd)}
+}
+$('startBtn').onclick=start;
+$('clearBtn').onclick=()=>{if(confirm('確定清除目前比賽並重新開始？')){localStorage.removeItem('tournamentPro');S=null;$('bracket').innerHTML='<div class="muted">開始抽籤後產生籤表。</div>';$('seedGrid').innerHTML='';$('lockNote').textContent='尚未抽籤';$('log').textContent='尚無紀錄';$('drawName').textContent='準備就緒';status()}};
+$('nextBtn').onclick=()=>{const m=nextOpen();if(!m){alert(S?.champion?'比賽已完成。':'目前沒有可進行的場次。');return}askWinner(m,m.a)};
+$('fullscreenBtn').onclick=()=>{document.body.classList.toggle('fullscreen')};
+$('printBtn').onclick=()=>window.print();
+$('saveBtn').onclick=()=>{if(!S){alert('目前沒有比賽可儲存');return}localStorage.setItem('tournamentPro',JSON.stringify(S));log('已儲存目前比賽到本機瀏覽器。');alert('已儲存。下次可按「載入」繼續。')};
+$('loadBtn').onclick=()=>{const x=localStorage.getItem('tournamentPro');if(!x){alert('找不到本機儲存的比賽。');return}try{S=JSON.parse(x);render();log('已載入本機比賽紀錄。')}catch(e){alert('載入失敗。')}};
+function saveLocal(){localStorage.setItem('tournamentPro',JSON.stringify(S))}
+window.addEventListener('beforeunload',()=>{if(S)localStorage.setItem('tournamentPro',JSON.stringify(S))});
+</script>
+</body>
+</html>
